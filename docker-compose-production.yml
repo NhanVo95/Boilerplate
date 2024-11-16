@@ -1,0 +1,117 @@
+services:
+  database:
+    container_name: database
+    image: mongo:7.0
+    working_dir: /data/db
+    restart: always
+    env_file: '.env.mongo'
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./database/mongodb:/data/db
+      - ./database/mongodb/log:/data/db/log
+      - ./database/mongodb_config:/data/configdb
+      - ./database/mongodb_config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: mongod --quiet --logpath /data/db/log/mongod.log
+    ports:
+      - 27017:27017
+    networks:
+      - external_network
+      - internal_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh database:27017/test --quiet
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 40s
+
+  # redis:
+  #   container_name: redis
+  #   image: redis:7.2.4
+  #   restart: always
+  #   expose:
+  #     - 6379:6379
+  #   networks:
+  #     - internal_network
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ./database/redis:/usr/local/etc/redis/
+  #     - ./database/redis_config:/usr/local/etc/redis_config/
+  #   command:
+  #     [
+  #       "redis-server",
+  #       "/usr/local/etc/redis_config/redis.conf",
+  #       "--appendonly",
+  #       "yes",
+  #     ]
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "-a", "s86Pr4gH3EJi", "--raw", "incr", "ping"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 40s
+
+  server:
+    container_name: server
+    hostname: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile.production
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./server:/app
+      - /app/node_modules
+    ports:
+      - ${PORT_API}:${PORT_API}
+    env_file: '.env.api'
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      TZ: Asia/Ho_Chi_Minh
+      BUILD_MODE: ${BUILD_MODE}
+      APP_PORT: ${PORT_API}
+    networks:
+      - external_network
+      - internal_network
+    command: bash -c "npm run dev"
+    links:
+      - database
+      # - redis
+    depends_on:
+      database:
+        condition: service_healthy
+    #   redis:
+    #     condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:${PORT_API} || exit 1
+      interval: 300s
+      retries: 5
+      start_period: 60s
+      timeout: 10s
+
+  nginx-server:
+    container_name: web-server
+    image: nginx:latest
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./nginx/:/etc/nginx/conf.d/:ro
+      - ./nginx/certbot/www:/var/www/certbot/:ro
+      - ./nginx/certbot/conf/:/etc/nginx/ssl/:ro
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./nginx/certbot/www:/var/www/certbot/:rw
+      - ./nginx/certbot/conf/:/etc/letsencrypt/:rw
+
+networks:
+  external_network:
+  internal_network:
+    internal: true

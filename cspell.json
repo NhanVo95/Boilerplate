@@ -1,0 +1,43 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "enableFiletypes": [
+    "markdown",
+    "mdx",
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact"
+  ],
+  "ignorePaths": [
+    ".cspell.json",
+    ".github/workflows/**",
+    ".vscode/*.json",
+    "**/*.{json,snap}",
+    "**/**/CHANGELOG.md",
+    "**/**/CONTRIBUTORS.md",
+    "**/**/TSLINT_RULE_ALTERNATIVES.md",
+    "**/coverage/**",
+    "**/dist/**",
+    "**/fixtures/**",
+    "**/node_modules/**",
+    "packages/website/.docusaurus/**",
+    "packages/website/build/**",
+    "packages/website/src/vendor/**"
+  ],
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
+  "words": [
+    "certbot",
+    "certonly",
+    "NhanVo",
+    "oneline",
+    "PSReadLine",
+    "reduxjs",
+    "resave",
+    "webroot",
+    "hookform"
+  ],
+  "ignoreWords": ["autofetch", "esbenp", "tailwindcss"],
+  "import": []
+}

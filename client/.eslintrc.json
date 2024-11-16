@@ -1,0 +1,52 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "error",
+    // "@typescript-eslint/naming-convention": [
+    //   "warn",
+    //   {
+    //     "selector": "variableLike",
+    //     "format": ["camelCase"]
+    //   },
+    //   {
+    //     "selector": "typeLike",
+    //     "format": ["PascalCase"]
+    //   }
+    // ],
+    // "@typescript-eslint/consistent-type-imports": "error",
+
+    // "react-refresh/only-export-components": "warn",
+    // "react-hooks/rules-of-hooks": "error",
+    // "react-hooks/exhaustive-deps": "warn",
+    // "react/prop-types": 0,
+    // "react/display-name": 0
+
+    "no-console": 1,
+    "no-extra-boolean-cast": 0,
+    "no-lonely-if": 1,
+    "no-trailing-spaces": 1,
+    "no-multi-spaces": 1,
+    "no-multiple-empty-lines": 1,
+    "space-before-blocks": ["error", "always"],
+    "object-curly-spacing": [1, "always"],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "semi": [2, "never"],
+    "beforeStatementContinuationChars": "always",
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "array-bracket-spacing": 1,
+    "linebreak-style": 0,
+    "no-unexpected-multiline": "warn",
+    "keyword-spacing": 1,
+    "comma-dangle": 1,
+    "comma-spacing": 1,
+    "arrow-spacing": 1,
+    "eol-last": 1,
+    "prefer-const": "off"
+  }
+}
