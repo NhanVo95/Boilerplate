@@ -6,12 +6,9 @@ services:
     restart: always
     env_file: '.env.mongo'
     environment:
-      TZ: Asia/Ho_Chi_Minh
+      - TZ: ${TIMEZONE}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./database/mongodb:/data/db
-      - ./database/mongodb/log:/data/db/log
-      - ./database/mongodb_config:/data/configdb
       - ./database/mongodb_config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     command: ['mongod', '--quiet', '--logpath', '/data/db/log/mongod.log']
     ports:
@@ -34,9 +31,10 @@ services:
       - 6379:6379
     networks:
       - internal_network
+    environment:
+      - TZ: ${TIMEZONE}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./database/redis:/usr/local/etc/redis/
       - ./database/redis_config:/usr/local/etc/redis_config/
     command: ['redis-server', '/usr/local/etc/redis_config/redis.conf', '--appendonly', 'yes']
     healthcheck:
@@ -62,7 +60,7 @@ services:
     env_file: '.env.api'
     environment:
       CHOKIDAR_USEPOLLING: true
-      TZ: Asia/Ho_Chi_Minh
+      TZ: ${TIMEZONE}
       BUILD_MODE: ${BUILD_MODE}
       APP_PORT: ${PORT_API}
     networks:
@@ -100,7 +98,8 @@ services:
       - 3000:3000
     env_file: '.env.web'
     environment:
-      BUILD_MODE: ${BUILD_MODE}
+      - TZ: ${TIMEZONE}
+      - BUILD_MODE: ${BUILD_MODE}
     networks:
       - external_network
       - internal_network
