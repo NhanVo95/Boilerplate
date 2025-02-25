@@ -6,11 +6,11 @@ services:
     restart: always
     env_file: '.env.mongo'
     environment:
-      - TZ: ${TIMEZONE}
+      TZ: ${TIMEZONE}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./database/mongodb_config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    command: ['mongod', '--quiet', '--logpath', '/data/db/log/mongod.log']
+    command: ['mongod', '--quiet', '--logpath', '/dev/null']
     ports:
       - ${EXPOSED_MONGO_PORT}:27017
     networks:
@@ -27,16 +27,17 @@ services:
     container_name: redis
     image: redis:7.2.4
     restart: always
-    expose:
+    working_dir: /usr/local/etc/redis
+    ports:
       - 6379:6379
     networks:
       - internal_network
-    environment:
-      - TZ: ${TIMEZONE}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./database/redis_config:/usr/local/etc/redis_config/
-    command: ['redis-server', '/usr/local/etc/redis_config/redis.conf', '--appendonly', 'yes']
+      - ./database/redis_config:/redis_config/
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    command: ['redis-server', '/redis_config/redis.conf', '--appendonly', 'yes']
     healthcheck:
       test: ['CMD', 'redis-cli', '-a', 's86Pr4gH3EJi', '--raw', 'incr', 'ping']
       interval: 10s
@@ -98,8 +99,8 @@ services:
       - 3000:3000
     env_file: '.env.web'
     environment:
-      - TZ: ${TIMEZONE}
-      - BUILD_MODE: ${BUILD_MODE}
+      TZ: ${TIMEZONE}
+      BUILD_MODE: ${BUILD_MODE}
     networks:
       - external_network
       - internal_network
