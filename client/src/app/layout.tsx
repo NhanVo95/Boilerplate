@@ -1,5 +1,3 @@
-'use client'
-
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
@@ -46,21 +44,25 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang='en' suppressHydrationWarning>
-        <style global jsx>
-          {`
+        <head>
+          <link rel='icon' href='/favicon.ico' />
+
+          <style global='true'>
+            {`
             .light {
               ${primaryColor} ${a11yColor} ${borderPrimaryColor} ${backgroundPrimaryColor}
             }
           `}
-        </style>
+          </style>
 
-        <style global jsx>
-          {`
+          <style global='true'>
+            {`
             .dark {
               ${primaryColor} ${a11yColor} ${borderPrimaryColor} ${backgroundPrimaryColor}
             }
           `}
-        </style>
+          </style>
+        </head>
 
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <ThemeProviders>{children}</ThemeProviders>
